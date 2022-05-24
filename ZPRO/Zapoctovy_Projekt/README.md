@@ -1,4 +1,4 @@
-##### Czech only
+##### ***Czech only***
 # Zápočtový projekt pro Základy programování na FJFI ČVUT
 Repozirář obsahuje zdrojové soubory pro kompilaci první verze jednoduchého programu, který může uživateli posloužit jako CML alternativa čtenářského deníku.
 
@@ -22,6 +22,12 @@ Pro jednoduchou kompilaci přes g++ lze využít Makefile:
 make		// pro kompilaci
 make all	// to samé
 make clean	// odstraneni executables
+```
+
+Pro spuštění:
+
+```
+./knihovna
 ```
 
 ### Zadání zápočtového programu
