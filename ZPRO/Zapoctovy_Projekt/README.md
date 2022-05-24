@@ -25,4 +25,4 @@ make clean	// odstraneni executables
 ```
 
 ### Zadání zápočtového programu
-K nahlédnutí [zde](/assets/zadani.pdf).
+K nahlédnutí [zde](assets/zadani.pdf).
