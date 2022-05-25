@@ -26,9 +26,8 @@ private:
 	kniha* posledni;
 	unsigned int pocet;
 	unsigned int filtrPocet;
-public:
-	ctenarskyDenik();  
-	~ctenarskyDenik();
+	
+	// Metody - private, protoze pouzivem funkci spustitProgram(), ktera vyuziva pouze metody vybratAkci()
 
 	// PRO PRACI SE SEZNAMEM
 
@@ -70,7 +69,6 @@ public:
 	void vypsatDoSouboru();									// Vyvola moznost vypsat knihy do souboru
 	void pridatKnihu();										// Interaktivni pridavani knih			
 	void pridatKnihu(kniha* p);								// Interaktivni pridavani knih, pomocna metoda pro csvImport()
-	void vybratAkci();										// Otevre interaktivni menu
 	void odstranitKnihu();									// Interaktivni odstranovani knih
 
 	// "NAVIC"
@@ -84,5 +82,10 @@ public:
 
 	// 8. funkce - ODSTRANIT DLE NAZVU
 	void odstranitKnihu(string nazev);
+public:
+	ctenarskyDenik();  
+	~ctenarskyDenik();
+	void vybratAkci();										// Otevre interaktivni menu
 };
+
 

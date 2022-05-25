@@ -44,6 +44,8 @@ void spustitProgram() {
 
 int main()
 {
+
+    // VYKOMENTOVANY TEXT NEBUDE FUNGOVAT, SLOUZIL POUZE PRO TESTOVANI, VETSINA METOD JE NYNI ALE PRIVATE
     // SHORTCUTS AKA HISTORIE TESTOVANI SEZNAMU:
     //kniha* kna = new kniha{ "Serotonin", "Houellesadaf", "Roman", 223, 2019, 2.5, nullptr };
     //kniha* knb = new kniha{ "Bablbam", "NJeco", "Neco2", 223, 2019, 2.5, nullptr };
