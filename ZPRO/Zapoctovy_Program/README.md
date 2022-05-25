@@ -1,5 +1,5 @@
 ##### ***Czech only***
-# Zápočtový projekt pro Základy programování na FJFI ČVUT
+# Zápočtový program pro Základy programování na FJFI ČVUT
 Repozirář obsahuje zdrojové soubory pro kompilaci první verze jednoduchého programu, který může uživateli posloužit jako CML alternativa čtenářského deníku.
 
 > *“There must be something in books, things we can’t imagine, to make a woman stay in a burning house; there must be something there. You don’t stay for nothing.”*
