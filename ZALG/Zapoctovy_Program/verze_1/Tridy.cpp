@@ -301,7 +301,7 @@ void Matice::najitCestu() {
 		} else {
 			ziskejMatici(agent.ziskejRadek(), agent.ziskejSloupec())->nastavStatus('a');
 			zobraz();	
-			zobrazCosts();
+//			zobrazCosts();
 		}
 		//PRIDAT COUNTER KOLIKRAT BYL EVALUATED	
 
