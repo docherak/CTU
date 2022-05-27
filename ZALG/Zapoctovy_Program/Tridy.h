@@ -7,16 +7,16 @@ class Dlazdice {
 	bool pruchozi;						// prekazka ? pruchozi
 	char status;						// start/cil/prekazka/pruchozi
 public:
-	Dlazdice *rodic;
 	Dlazdice();
-	
-	void nastavPozice(int _i, int _j);
+
+	Dlazdice *rodic;	
+	void nastavPozice(int _i, int _j);			
 	void nastavG(int _gCost);
 	void nastavH(int _hCost);
 	void nastavStatus(char _status);
 	void nastavPruchozi(bool _pruchozi);
 	
-	int fCost();
+	int fCost();						// vypocita a vrati F = G + H
 	int ziskejG();
 	int ziskejH();
 	int ziskejRadek();
@@ -34,14 +34,16 @@ public:
 
 class Matice {
 	int m, n;
-	Dlazdice *matice;
+	Dlazdice *matice;					
 public:
 	Matice(int _m, int _n);
-	
+	~Matice();
+
 	int ziskejPocRadku();
 	int ziskejPocSloupcu();
 
 	void zobraz();
+	void zobrazCosts();
 
 	void priradPozice();
 
@@ -57,5 +59,7 @@ public:
 	int ziskejVzdalenost(Dlazdice *mistoA, Dlazdice *mistoB);
 	bool jeUvnitrVektoru(Dlazdice a, std::vector<Dlazdice> vektor);
 	
+	void trasovani(Dlazdice *zacatek, Dlazdice *cil);
 	void najitCestu();
+	void pridelGH();
 };

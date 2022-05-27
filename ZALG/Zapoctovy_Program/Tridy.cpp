@@ -92,7 +92,12 @@ void Dlazdice::vypisPozici() {
 Matice::Matice(int _m, int _n) {
 	m = _m;
 	n = _n;
-	matice = new Dlazdice[m * n];	
+	matice = new Dlazdice[m * n]();	
+}
+
+Matice::~Matice() {
+	delete[] matice;
+	matice = NULL;
 }
 
 int Matice::ziskejPocRadku() {
@@ -110,9 +115,20 @@ Dlazdice* Matice::ziskejMatici(int _i, int _j) {
 void Matice::zobraz() {
 	for (int r = 0; r < m; r++) {
 		for (int s = 0; s < n; s++) {
+//			std::cout << "| [" << matice[r * m +s].ziskejG() << "],[" << matice[r * m + s].ziskejH() << "] |"; 	
 //			matice[r * m + s].vypisPozici();
 			matice[r * m + s].ziskejStatus();
 			matice[r * m + s].vypisStatus();
+		}
+		std::cout << "\n" << std::endl;
+	}
+	std::cout << "\n" << std::endl;	
+}
+
+void Matice::zobrazCosts() {
+	for (int r = 0; r < m; r++) {
+		for (int s = 0; s < n; s++) {
+			std::cout << "| [" << matice[r * m +s].ziskejG() << "],[" << matice[r * m + s].ziskejH() << "] |"; 	
 		}
 		std::cout << "\n" << std::endl;
 	}
@@ -160,10 +176,11 @@ void Matice::pridejStart(int _i, int _j) {
 
 void Matice::pridejCil(int _i, int _j) {
 	matice[_i * m + _j].nastavStatus('c');
+	matice[_i * m + _j].nastavPruchozi(true);
 }
 
 std::vector<Dlazdice> Matice::najdiSousedy(Dlazdice *aktualni) {
-	std::vector<Dlazdice> *sousedi = new std::vector<Dlazdice>;
+	std::vector<Dlazdice> sousedi;// = new std::vector<Dlazdice>;
 
 	for (int r = -1; r <= 1; r++) {
 		for (int s = -1; s <= 1; s++) {
@@ -173,12 +190,12 @@ std::vector<Dlazdice> Matice::najdiSousedy(Dlazdice *aktualni) {
 			int kontrolaY = aktualni->ziskejSloupec() + s;
 
 			if (kontrolaX >= 0 && kontrolaX < m && kontrolaY >= 0 && kontrolaY < n) {
-				sousedi->push_back(matice[kontrolaX * m + kontrolaY]);
+				sousedi.push_back(matice[kontrolaX * m + kontrolaY]);
 			}	
 		}
 	}
 
-	return *sousedi;
+	return sousedi;
 }
 
 Dlazdice *Matice::najitStart() {
@@ -215,4 +232,91 @@ bool Matice::jeUvnitrVektoru(Dlazdice a, std::vector<Dlazdice> vektor) {
 		if (i == a) return true;	
 	}	
 	return false;
+}
+
+void Matice::najitCestu() {
+
+	// Start a cil
+	Dlazdice *start = najitStart();
+	Dlazdice *cil = najitCil();
+
+	// K vyhodnoceni
+	std::vector<Dlazdice> *toEval = new std::vector<Dlazdice>();
+	std::vector<Dlazdice> *evald = new std::vector<Dlazdice>();
+
+	// Kroky
+	toEval->push_back(*start);
+
+	while (toEval->size() > 0) {
+		std::cin.ignore();
+
+		Dlazdice agent = toEval->at(0);
+
+		for (int i = 1; i < toEval->size(); i++) {
+			if ((toEval->at(i).fCost() < agent.fCost()) || (toEval->at(i).fCost() == agent.fCost() && toEval->at(i).ziskejH() < agent.ziskejH())) {
+				agent = toEval->at(i);
+//				break;
+			}	
+		}
+
+//		// Odstranit ji z k vyhodnoceni
+		for(std::vector<Dlazdice>::size_type i = 0; i != toEval->size(); i++) {
+    			if(toEval->at(i) == agent) {
+        			toEval->erase(toEval->begin()+i);
+        			break;
+   			}
+		}
+		
+		evald->push_back(agent);
+		if (agent == *cil) {
+			std::cout << "SUCCESS" << std::endl;
+			return;	
+		}
+		
+		// Soused loop
+		std::vector<Dlazdice> sousedi = najdiSousedy(&agent);
+	//	(&agent)->vypisPozici();	
+		for (Dlazdice soused: sousedi) {
+//			soused.vypisPozici();
+			if (!soused.ziskejPruchozi() || jeUvnitrVektoru(soused, *evald)) {
+				continue;
+			} 	
+//			soused.vypisPozici();	
+			int novySousedCost = agent.ziskejG() + ziskejVzdalenost(&agent, &soused);
+//			std::cout << ":" << novySousedCost << std::endl;
+			if (novySousedCost < soused.ziskejG() || !jeUvnitrVektoru(soused, *toEval)) {
+				soused.nastavG(novySousedCost);
+				soused.nastavH(ziskejVzdalenost(&soused,cil));
+				matice[soused.ziskejRadek() * m + soused.ziskejSloupec()].nastavG(novySousedCost);
+				matice[soused.ziskejRadek() * m + soused.ziskejSloupec()].nastavH(ziskejVzdalenost(&soused, cil));
+//				std::cout << soused.ziskejG() << " " << soused.ziskejH() << std::endl;
+				
+				if(!jeUvnitrVektoru(soused, *toEval)) {
+					toEval->push_back(soused);
+				}
+			}
+		}
+		if (agent == *start || agent == *cil) {
+			zobraz();
+		} else {
+			ziskejMatici(agent.ziskejRadek(), agent.ziskejSloupec())->nastavStatus('a');
+			zobraz();	
+			zobrazCosts();
+		}
+		//PRIDAT COUNTER KOLIKRAT BYL EVALUATED	
+
+
+		
+	}
+	std::cout << "NO PATH" << std::endl;
+	return;	
+}
+
+void Matice::pridelGH(){
+	for (int r = 0; r < m; r++) {
+		for (int s = 0; s < n; s++) {
+			matice[r * m + s].nastavG(ziskejVzdalenost(najitStart(), &matice[r*m+s]));
+			matice[r * m + s].nastavH(ziskejVzdalenost(najitCil(), &matice[r*m+s]));
+		}
+	}
 }
