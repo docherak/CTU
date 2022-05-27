@@ -1,6 +1,6 @@
 5 9
 s . . X . X . . .
-. X . X X . X X X
-X . . . X . X . c
+. X . X X . X . X
+X . . . X . X . .
 X X . X . X X . .
-. . . . . . X . X
+. . . . . . X c X
