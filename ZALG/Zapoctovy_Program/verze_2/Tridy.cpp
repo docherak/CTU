@@ -216,8 +216,8 @@ void Matice::zpracovatVstup() {
 		}
 	}
 	toEval.push_back(startovniDlazdice);
-	std::cout << "Soubor uspesne nacten!" << std::endl;
-	std::cout << "Matice typu " << m << 'x' << n << '.' << std::endl;	
+	std::cout << ">Soubor uspesne nacten!" << std::endl;
+	std::cout << ">Matice typu " << m << 'x' << n << ".\n" << std::endl;	
 }
 
 std::vector<Dlazdice*> Matice::najdiSousedy(Dlazdice *_agent) {
@@ -280,7 +280,6 @@ void Matice::vykreslitNejkratsiCestu(const std::vector<Dlazdice*> cesta) {
 	for (Dlazdice *a : reversed) {
 		a->nastavStatus('O');
 		vykresliCestu();
-		puts("----------------");
 		std::cin.ignore();
 	}
 	cilovaDlazdice->nastavStatus('O');
