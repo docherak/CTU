@@ -1,25 +1,25 @@
-#include <map>
+#include <map>											// key:value pary
 #include <vector>
 
 class Dlazdice {
-	bool prekazka;
+	bool prekazka;										 
 	bool pocatek;
 	bool cil;
 
 	int i, j;
 
-	int gCost = 0;
-	int hCost = 0;
+	int gCost = 0;										// cena vzdalenosti od pocatku
+	int hCost = 0;										// cena vzdalenosti do konce
 
-	char status;
+	char status;										// char verze bool hodnot
 
-	Dlazdice *rodic = nullptr;
-
+	Dlazdice *rodic = nullptr;								// pro trasovani
+// Metody
 public:
 	Dlazdice(int _i, int _j, bool _prekazka, bool _pocatek, bool _cil, char _status);
 	~Dlazdice() = default;
 
-	int ziskatG() const;
+	int ziskatG() const;									// const = aby compiler vedel, ze nemenim objekt
 	int ziskatH() const;
 	int ziskatF() const;
 	int ziskatPoziciRadek() const;
@@ -35,7 +35,7 @@ public:
 	bool jePocatek() const;
 	bool jeCil() const;
 	
-	inline bool operator<(const Dlazdice &d) const {
+	inline bool operator<(const Dlazdice &d) const {					// definovani vlastniho operatoru pro srovnani
 		const int fCost = ziskatF(), d_fCost = d.ziskatF();
 		return fCost < d_fCost || (fCost == d_fCost &&	hCost < d.ziskatH());
 	}
@@ -60,6 +60,7 @@ class Matice {
 
 	bool maticeKompletni = false;
 	std::vector<Dlazdice*> nejkratsiCesta;
+// Metody
 public:
 	Matice();
 	~Matice();
@@ -79,8 +80,6 @@ public:
 	void vykresliCestu();
 
 	void obnovit();
-
-	void menu();
 private:
 	int vzdalenostDlazdic(const Dlazdice *a, const Dlazdice *b) const;
 	void vymazatData();

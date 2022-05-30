@@ -1,11 +1,11 @@
-#include "Tridy.h"
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <algorithm> //iterace pres vektor
-#include <vector>
-#include <cmath>
+#include "Tridy.h"	// hlavickovy soubor
+#include <iostream>	// input-output
+#include <fstream>	// soubory
+#include <sstream>	// stringstream
+#include <string>	// string
+#include <algorithm> 	// iterace pres vektor
+#include <vector>	// vektory
+#include <cmath>	// absolutni hodnota
 
 //			
 //			
@@ -15,6 +15,7 @@
 //		
 //		
 
+// Konstruktor (destruktor=default)
 Dlazdice::Dlazdice(int _i, int _j, bool _prekazka, bool _pocatek, bool _cil, char _status) :
 	i(_i),
 	j(_j),
@@ -25,7 +26,7 @@ Dlazdice::Dlazdice(int _i, int _j, bool _prekazka, bool _pocatek, bool _cil, cha
 {
 }
 
-// Getters
+// Gettery
 int Dlazdice::ziskatG() const {return gCost;}
 int Dlazdice::ziskatH() const {return hCost;}
 int Dlazdice::ziskatF() const {return gCost + hCost;}
@@ -52,6 +53,7 @@ void Dlazdice::nastavRodice(Dlazdice *_rodic) {
 void Dlazdice::nastavStatus(char _status) {
 	status = _status;	
 }
+
 //
 //
 //
@@ -60,24 +62,47 @@ void Dlazdice::nastavStatus(char _status) {
 //
 //
 
+
+// Konstruktor
 Matice::Matice() {
 	zpracovatVstup();
 }
 
+// Destruktor
 Matice::~Matice() {
 	vymazatData();
 }
 
+// Metoda pro destruktor
+void Matice::vymazatData() {
+	for (int r = 0; r < pole.size(); ++r) {
+		std::vector<Dlazdice*> &radek = pole.at(r);
+		for (Dlazdice *d : radek) {
+			delete d;
+		}
+		radek.clear();
+	}
+	pole.clear(); toEval.clear(); evald.clear(); nejkratsiCesta.clear();
+	m = n = 0;
+	nemozne = false;
+	startovniDlazdice = cilovaDlazdice = nullptr;
+	maticeKompletni = false;
+}
+
+// Reset, pokud chci volat opakovane
 void Matice::obnovit() {
 	vymazatData();
 	zpracovatVstup();
 }
 
+// Gettery
 bool Matice::jeKompletni() const {return maticeKompletni;}
 bool Matice::jeNemozne() const {return nemozne;}
 int Matice::ziskejRadky() const {return m;}
 int Matice::ziskejSloupce() const {return n;}
+const std::vector<Dlazdice*>& Matice::ziskatNejkratsiCestu() const {return nejkratsiCesta;}
 
+// Krok A* algoritmu
 void Matice::krok() {
 	if (!maticeKompletni && toEval.size() < 1) {
 		std::cout << "nejde" << std::endl;
@@ -105,6 +130,8 @@ void Matice::krok() {
 	// uspech
 	if (agent == cilovaDlazdice) {
 		trasovat();
+		agent->nastavStatus('C');	
+		vykresliCestu();
 		return;
 	}
 
@@ -123,7 +150,10 @@ void Matice::krok() {
 			if (!uvnitrToEval) toEval.push_back(soused); 
 		}
 	}
-	if (agent == startovniDlazdice || agent == cilovaDlazdice) {
+	if (agent == startovniDlazdice) {
+		agent->nastavStatus('S');	
+		vykresliCestu();
+	} else if (agent == cilovaDlazdice) {
 		vykresliCestu();
 	} else {
 		agent->nastavStatus('a');	
@@ -132,26 +162,15 @@ void Matice::krok() {
 	
 }
 
-void Matice::vymazatData() {
-	for (int r = 0; r < pole.size(); ++r) {
-		std::vector<Dlazdice*> &radek = pole.at(r);
-		for (Dlazdice *d : radek) {
-			delete d;
-		}
-		radek.clear();
-	}
-	pole.clear(); toEval.clear(); evald.clear(); nejkratsiCesta.clear();
-	m = n = 0;
-	nemozne = false;
-	startovniDlazdice = cilovaDlazdice = nullptr;
-	maticeKompletni = false;
-}
-
+// Nacteni souboru
 void Matice::zpracovatVstup() {
 	std::ifstream vstup(VSTUPNI_SOUBOR);
 	std::string radek;
+	
 	bool prvniRadekNacten = false;
 	int cRadku = 0;
+	int pocetStartu = 0;
+	int pocetCilu = 0;
 
 	if (!vstup.is_open()) {
 		throw std::string("Soubor nelze nacist.");	
@@ -203,10 +222,12 @@ void Matice::zpracovatVstup() {
 				if (hodnotaDlazdice == 's') {
 					if (startovniDlazdice) throw std::string("Nalezeno vice startovnich pozic!");	
 					startovniDlazdice = r; 
+					pocetStartu++;		// tenhle check je pro to, kdyby bylo < 1 pozic, mohl bych pres to resit i pripad kdy jich je vic, ale pro ten pripad je rychlejsi ^^^ if statement
 				}
 				if (hodnotaDlazdice == 'c') {
 					if (cilovaDlazdice) throw std::string("Nalezeno vice cilovych pozic!");	
 					cilovaDlazdice = r; 
+					pocetCilu++;
 				}
 
 				radekDlazdice.push_back(r);
@@ -215,15 +236,15 @@ void Matice::zpracovatVstup() {
 			++cRadku;
 		}
 	}
+	if (pocetStartu < 1 || pocetCilu < 1) throw std::string("Chybi startovni/cilova pozice!");
 	toEval.push_back(startovniDlazdice);
 	std::cout << ">Soubor uspesne nacten!" << std::endl;
 	std::cout << ">Matice typu " << m << 'x' << n << ".\n" << std::endl;	
 }
 
+// Nalezeni sousednich dlazdic
 std::vector<Dlazdice*> Matice::najdiSousedy(Dlazdice *_agent) {
 	std::vector<Dlazdice*> sousedi;
-//	const int r = _agent->ziskatPoziciRadek();
-//	const int s = _agent->ziskatPoziciSloupec();	
 	
 	for (int r = -1; r <= 1; r++) {
 		for (int s = -1; s <= 1; s++) {
@@ -241,6 +262,7 @@ std::vector<Dlazdice*> Matice::najdiSousedy(Dlazdice *_agent) {
 	return sousedi;
 }
 
+// Vypocet vzdalenosti dvou dlazdic (pro gCost, hCost, fCost hodnoty)
 int Matice::vzdalenostDlazdic(const Dlazdice *a, const Dlazdice *b) const {
 	const int vzdalX = abs(a->ziskatPoziciRadek() - b->ziskatPoziciRadek());	
 	const int vzdalY = abs(a->ziskatPoziciSloupec() - b->ziskatPoziciSloupec());
@@ -250,6 +272,7 @@ int Matice::vzdalenostDlazdic(const Dlazdice *a, const Dlazdice *b) const {
 	
 }
 
+// Log nejktratsi cesty
 void Matice::trasovat() {
 	maticeKompletni = true;
 	Dlazdice *optimalniAgent = cilovaDlazdice;
@@ -260,10 +283,7 @@ void Matice::trasovat() {
 	}
 }
 
-const std::vector<Dlazdice*>& Matice::ziskatNejkratsiCestu() const {
-	return nejkratsiCesta;
-}
-
+// Vypsani nejkratsi cesty (ij-te prvky)
 void Matice::vypsatNejkratsiCestu(const std::vector<Dlazdice*> cesta) {
 	std::vector<Dlazdice*> reversed = cesta;
 	std::reverse(reversed.begin(), reversed.end());
@@ -274,6 +294,7 @@ void Matice::vypsatNejkratsiCestu(const std::vector<Dlazdice*> cesta) {
 	std::cout << cilovaDlazdice->ziskatPoziciRadek() << "," << cilovaDlazdice->ziskatPoziciSloupec() << std::endl;	
 }
 
+// Vypsani nejkratsi cesty v podobe matice
 void Matice::vykreslitNejkratsiCestu(const std::vector<Dlazdice*> cesta) {
 	std::vector<Dlazdice*> reversed = cesta;
 	std::reverse(reversed.begin(), reversed.end());
@@ -286,6 +307,7 @@ void Matice::vykreslitNejkratsiCestu(const std::vector<Dlazdice*> cesta) {
 	vykresliCestu();
 }
 
+// Vypsani pozice agenta v podobe matice
 void Matice::vykresliCestu() {
 	for (int r = 0; r < pole.size(); ++r) {
 		std::vector<Dlazdice*> radek = pole.at(r);
@@ -295,8 +317,4 @@ void Matice::vykresliCestu() {
 		std::cout << '\n' << std::endl;
 		radek.clear();
 	}
-}
-
-void Matice::menu() {
-	
 }

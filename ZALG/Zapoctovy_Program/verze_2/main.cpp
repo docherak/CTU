@@ -1,10 +1,6 @@
 #include <iostream>
 #include "Tridy.h"
 
-// OSETRIT KDYZ NEEXISTUJE START/CIL
-// pridat cisla kroku
-
-
 int main() {
 	std::cout << R"(
 		|				|
@@ -36,13 +32,15 @@ Vstupni soubor s pevnym nazvem vstup.txt je nutne dat do stejne slozky jako prog
 		. . .
 		s X c
 
-Program vykresli cely proces hledani cile (vsechny pozice agenta 'a') a nasledne zobrazi pouze finalni optimalni trasu (oznacena pomoci 'O').)" << std::endl;
+Program vykresli cely proces hledani cile (vsechny pozice agenta 'a') a nasledne zobrazi pouze finalni optimalni trasu (oznacena pomoci 'O').
+Kazdy dalsi krok se vykresli po stisknuti [Enter].)" << std::endl;
 	
 	std::cout << "Pro nacteni vstupniho souboru stisknete klavesu [Enter]..." << std::endl;
 	std::cin.ignore();
 	
 	Matice *matice = nullptr;
 	
+	// Pokus o nacteni matice:
 	try {
 		matice = new Matice();
 	} catch (std::string &chyba) {
@@ -50,15 +48,22 @@ Program vykresli cely proces hledani cile (vsechny pozice agenta 'a') a nasledne
 		return -1;
 	}
 
+	// Volani jednotlivych kroku agenta A*:
+	int krok = 1;
 	while(!matice->jeKompletni()) {
 		if (matice->jeNemozne()) break;
+		std::cout << "Krok no. " << krok << ":" << std::endl;
 		matice->krok();
+		krok++;
 		std::cin.ignore();
 	}
+	std::cout << ">Pocet kroku: " << krok-1 << '\n' << std::endl;
 
-//	matice->vypsatNejkratsiCestu(matice->ziskatNejkratsiCestu());
-	std::cout << ">Cesta: \n" << std::endl;
+	// Vykresleni nejkratsi cesty:
+	std::cout << ">Nejkratsi cesta:" << std::endl;
+	std::cin.ignore();
 	matice->vykreslitNejkratsiCestu(matice->ziskatNejkratsiCestu());
 	std::cout << ">Pocet kroku: " << matice->ziskatNejkratsiCestu().size() << std::endl;
+
 	return 0;
 }
