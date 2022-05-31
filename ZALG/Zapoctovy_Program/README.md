@@ -31,7 +31,7 @@ Pro spuštění:
 ```
 
 ### Zadání zápočtového programu
->A* algoritmus
+A* algoritmus
 - Vstupem je matice n x m, "X" označte zeď a "." označte volný prostor. Startovací pozici označte "s" a cílovou "c". Pozici agenta označte "a" 
 - Úkolem je najít v takovém bludišti cestu
 - Krokování pomocí nějakého vstupu, třeba ENTER
