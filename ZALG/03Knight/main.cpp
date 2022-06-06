@@ -82,7 +82,7 @@ void recursiveSearch(int x, int y) {
 int main() {
 	init();
 	print();
-	jump(0, 0, 0);
+	jump(3, 3, 0);
 	print();
 	std::cout << "Longest path is " << maxLength() << " jumps." << std::endl;
 	recursiveSearch(5,5);
