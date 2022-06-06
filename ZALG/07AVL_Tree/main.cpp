@@ -4,8 +4,6 @@
 
 #include <iostream>
 
-using namespace std;
-
 struct Item
 {
     int key;    // stored value
@@ -150,8 +148,8 @@ void print(Item* branch, int level = 0)
     if (branch) // branch != nullptr
     {
         for (int i = 0; i < level; i++)
-            cout << '-';
-        cout << branch->key << " (" << branch->height << ")" << endl;
+            std::cout << '-';
+	std::cout << branch->key << " (" << branch->height << ")" << std::endl;
 
         print(branch->left, level + 1);
         print(branch->right, level + 1);
@@ -169,7 +167,7 @@ void checkBranch(Item* branch)
         if (!first)
             if (last_value >= branch->key)
             {
-                cout << "ERROR..." << endl;
+		std::cout << "ERROR..." << std::endl;
                 ok = false;
             }
         last_value = branch->key;
@@ -183,7 +181,7 @@ void check(Item* root)
     ok = true;
     first = true;
     checkBranch(root);
-    if (ok) cout << "WORKING FINE" << endl;
+    if (ok) std::cout << "WORKING FINE" << std::endl;
 }
 
 int main()
