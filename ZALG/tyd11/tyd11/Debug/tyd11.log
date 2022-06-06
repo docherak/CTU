@@ -1,0 +1,3 @@
+﻿  tyd11.cpp
+C:\Users\rehakto4\source\repos\tyd11\tyd11\tyd11.cpp(103,15): warning C4018: '>': signed/unsigned mismatch
+  tyd11.vcxproj -> C:\Users\rehakto4\source\repos\tyd11\Debug\tyd11.exe
