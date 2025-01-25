@@ -1,0 +1,41 @@
+{
+    "buildType": {
+      "default": "debug",
+      "choices": {
+        "debug": {
+          "short": "Debug",
+          "long": "Disable optimizations, emit debug information",
+          "buildType": "Debug"
+        },
+        "release" : {
+          "short": "Release",
+          "long": "Optimize for speed, exclude debug information",
+          "buildType": "Release"
+        },
+        "RelWithDebInfo" : {
+          "short": "Release+Debug",
+          "long": "Optimize for speed, include debug information",
+          "buildType": "RelWithDebInfo"
+        },
+        "MinSizeRel" : {
+          "short": "Min Size Release",
+          "long": "Optimize for smallest binary size, exclude debug information",
+          "buildType": "MinSizeRel"
+        },
+        "asan" : {
+          "short": "ASAN",
+          "long": "Instrument with Address Sanitizer",
+          "buildType": "asan"
+        },
+        "lsan" : {
+          "short": "LSAN",
+          "long": "Instrument with Leak Sanitizer",
+          "buildType": "lsan",
+          "env": {
+            "verbosity": "1",
+            "log_threads": "1"
+          }
+        }
+      }
+    }
+}
